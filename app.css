@@ -1,0 +1,10 @@
+h1 {
+    font-size: 45px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
