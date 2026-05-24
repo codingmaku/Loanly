@@ -1,555 +1,502 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
-    <title>Loanly</title>
-  </head>
+  <title>Loanly</title>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
 
-  <body class="w-full h-full bg-gray-50 font-sans">
-    <script>
-document.addEventListener("DOMContentLoaded", () => {
+<body class="w-full min-h-screen bg-gray-50 text-gray-800 antialiased pt-20">
 
-  document.querySelectorAll("nav a").forEach(link => {
-    link.addEventListener("click", function(e) {
-      const target = document.querySelector(this.getAttribute("href"));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: "smooth" });
-      }
-    });
-  });
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
 
-  document.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      btn.classList.add("scale-95");
-      setTimeout(() => btn.classList.remove("scale-95"), 150);
-    });
-  });
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-  document.querySelectorAll(".shadow-sm").forEach(card => {
-    card.addEventListener("mousemove", (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    if (menuBtn && mobileMenu) {
+      menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
 
-      const rotateX = ((y / rect.height) - 0.5) * 10;
-      const rotateY = ((x / rect.width) - 0.5) * -10;
-
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
-    });
-
-    card.addEventListener("mouseleave", () => {
-      card.style.transform = "rotateX(0) rotateY(0) scale(1)";
-    });
-  });
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.remove("opacity-0", "translate-y-10");
-        entry.target.classList.add("opacity-100", "translate-y-0");
-      }
-    });
-  });
-
-  document.querySelectorAll(".grid > div, h2, p, img").forEach(el => {
-    el.classList.add("opacity-0", "translate-y-10", "transition-all", "duration-700");
-    observer.observe(el);
-  });
-
-  document.querySelectorAll(".text-3xl").forEach(el => {
-    const originalText = el.innerText;
-    const number = parseInt(originalText);
-
-    if (!isNaN(number)) {
-      let count = 0;
-
-      const interval = setInterval(() => {
-        count += Math.ceil(number / 30);
-
-        if (count >= number) {
-          el.innerText = originalText;
-          clearInterval(interval);
-        } else {
-          el.innerText = count;
-        }
-      }, 30);
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+      });
     }
+
+    document.querySelectorAll("a[href^='#']").forEach(link => {
+      link.addEventListener("click", function(e) {
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    });
+
+    document.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.classList.add("scale-95");
+        setTimeout(() => btn.classList.remove("scale-95"), 150);
+      });
+    });
+
+    document.querySelectorAll(".shadow-sm, .card-tilt").forEach(card => {
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const rotateX = ((y / rect.height) - 0.5) * 10;
+        const rotateY = ((x / rect.width) - 0.5) * -10;
+
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+        card.style.transition = "transform 0.1s ease";
+      });
+
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = "rotateX(0) rotateY(0) scale(1)";
+        card.style.transition = "transform 0.5s ease";
+      });
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove("opacity-0", "translate-y-10");
+          entry.target.classList.add("opacity-100", "translate-y-0");
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll(".grid > div, h2, p:not(.no-animate), .reveal-img").forEach(el => {
+      el.classList.add("opacity-0", "translate-y-10", "transition-all", "duration-700");
+      observer.observe(el);
+    });
+
+    document.querySelectorAll(".stat-counter").forEach(el => {
+      const originalText = el.innerText;
+      const number = parseInt(originalText);
+
+      if (!isNaN(number)) {
+        let count = 0;
+        const interval = setInterval(() => {
+          count += Math.ceil(number / 30);
+          if (count >= number) {
+            el.innerText = originalText;
+            clearInterval(interval);
+          } else {
+            el.innerText = count + (originalText.includes('%') ? '%' : '');
+          }
+        }, 30);
+      }
+    });
   });
+  </script>
 
-});
-</script>
+  <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 sm:px-6 md:px-12 py-4 bg-white shadow-sm">
+    <div class="flex items-center gap-2 max-w-[120px]">
+      <img src="loanly.jpg" alt="loanly logo" class="h-10 w-auto object-contain">
+    </div>
 
-    <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-12 py-4 md:py-5 bg-white shadow-sm">
+    <nav class="hidden md:flex items-center gap-6 lg:gap-8 text-gray-600 font-medium">
+      <a href="#home" class="text-[#436c4e] transition-colors">Home</a>
+      <a href="#features" class="hover:text-[#436c4e] transition-colors">Features</a>
+      <a href="#about" class="hover:text-[#436c4e] transition-colors">About Us</a>
+      <a href="#pricing" class="hover:text-[#436c4e] transition-colors">Pricing</a>
+      <a href="#contact" class="hover:text-[#436c4e] transition-colors">Contact</a>
+    </nav>
 
-      <div class="flex items-center gap-2 w-15 h-15">
-          <img src="loanly.jpg" alt="loanly logo">
-      </div>
+    <div class="hidden md:block">
+      <button class="bg-[#436c4e] hover:bg-[#34543d] text-white px-5 py-2 rounded-lg font-medium shadow transition">
+        Login
+      </button>
+    </div>
 
-      <nav class="hidden md:flex items-center gap-8 text-gray-600">
-        <a href="#home" class="text-[#436c4e] font-medium">Home</a>
-        <a href="#features" class="hover:text-[#436c4e]">Features</a>
-        <a href="#pricing" class="hover:text-[#436c4e]">Pricing</a>
-        <a href="#about" class="hover:text-[#436c4e]">About Us</a>
-        <a href="#contact" class="hover:text-[#436c4e]">Contact</a>
-      </nav>
+    <button id="menu-btn" class="block md:hidden text-gray-600 focus:outline-none p-2" aria-label="Toggle navigation menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
 
-      <div>
-        <button class="bg-[#436c4e] text-white px-5 py-2 rounded-lg font-medium shadow">
-          Login
-        </button>
-      </div>
+    <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white shadow-md border-t border-gray-100 flex flex-col p-4 space-y-3 md:hidden">
+      <a href="#home" class="text-[#436c4e] py-2 px-3 font-medium rounded hover:bg-gray-50">Home</a>
+      <a href="#features" class="text-gray-600 py-2 px-3 font-medium rounded hover:bg-gray-50">Features</a>
+      <a href="#about" class="text-gray-600 py-2 px-3 font-medium rounded hover:bg-gray-50">About Us</a>
+      <a href="#pricing" class="text-gray-600 py-2 px-3 font-medium rounded hover:bg-gray-50">Pricing</a>
+      <a href="#contact" class="text-gray-600 py-2 px-3 font-medium rounded hover:bg-gray-50">Contact</a>
+      <button class="w-full bg-[#436c4e] text-white py-2.5 rounded-lg font-medium shadow mt-2">Login</button>
+    </div>
+  </header>
 
-    </header>
-
-    <div id="home" class="w-full min-h-screen flex flex-col lg:flex-row items-center justify-center py-28 px-6 md:px-12 lg:px-24 gap-12">
-
-      <div class="flex-1 space-y-6">
-
+  <main>
+    <section id="home" class="w-full min-h-[calc(100vh-5rem)] flex flex-col lg:flex-row items-center justify-center py-12 md:py-20 px-4 sm:px-6 md:px-12 lg:px-24 gap-12 max-w-7xl mx-auto">
+      <div class="flex-1 space-y-6 text-center lg:text-left">
         <div>
-          <span class="text-sm px-4 py-1 bg-green-100 text-green-700 rounded-full">
+          <span class="inline-block text-xs font-semibold tracking-wider px-4 py-1.5 bg-green-100 text-green-700 rounded-full">
             FAST & SECURE DIGITAL LENDING
           </span>
         </div>
 
-        <div>
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-            Clear records,<br>
-            <span class="text-[#436c4e]">zero stress.</span>
-          </h1>
-        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+          Clear records,<br class="hidden sm:inline">
+          <span class="text-[#436c4e]">zero stress.</span>
+        </h1>
 
-        <div class="max-w-md">
-          <p class="text-gray-500 py-8">
-            Track borrowers, monitor repayments, generate loan records,
-            and automate reminders in one secure platform.
+        <div class="max-w-md mx-auto lg:mx-0">
+          <p class="text-gray-500 text-base md:text-lg">
+            Track borrowers, monitor repayments, generate loan records, and automate reminders in one secure platform.
           </p>
         </div>
 
         <div>
-          <button class="bg-[#436c4e] text-white px-6 py-4 rounded-lg font-medium shadow">
+          <button class="bg-[#436c4e] hover:bg-[#34543d] text-white px-8 py-4 rounded-lg font-medium shadow-md transition">
             Start Lending
           </button>
         </div>
 
-        <div class="flex gap-6 text-xs text-gray-400 pt-4">
+        <div class="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-6 text-xs font-semibold tracking-wider text-gray-400 pt-4">
           <span>NO HIDDEN FEES</span>
-          <span>•</span>
+          <span class="hidden sm:inline">•</span>
           <span>PRIVATE LEDGER</span>
-          <span>•</span>
+          <span class="hidden sm:inline">•</span>
           <span>SECURE</span>
         </div>
-
       </div>
 
-      <div class="flex-1 flex justify-center">  
-        <div class="w-full max-w-[500px] h-auto bg-gray-200 rounded-xl shadow-inner flex items-center justify-center">
-          <img src="loan.png" class="rounded-xl w-full h-auto" alt="loan image">
+      <div class="flex-1 flex justify-center w-full">  
+        <div class="w-full max-w-[500px] h-auto bg-gray-200 rounded-xl shadow-inner overflow-hidden reveal-img">
+          <img src="loan.png" class="w-full h-auto object-cover transform hover:scale-105 transition duration-500" alt="loan management app platform preview asset layout interface context illustration">
         </div>
       </div>
+    </section>
 
-    </div>
 
-    <div id="features" class="w-full py-24 bg-gray-100 flex flex-col items-center px-20 space-y-16">
+    <section id="features" class="w-full py-16 md:py-24 bg-gray-100 px-4 sm:px-6 md:px-12 lg:px-20 space-y-16">
+      <div class="w-full flex flex-col md:flex-row justify-center items-center gap-8 md:gap-6 lg:gap-10 max-w-5xl mx-auto">
 
-    <div class="w-full flex flex-col lg:flex-row justify-center gap-10">
-
-      <div class="w-full max-w-[400px] h-[260px] bg-gray-100 rounded-2xl shadow-inner flex items-center justify-center relative">
-
-        <span class="absolute -top-4 text-xs px-4 py-1 bg-gray-300 text-gray-600 rounded-xl">
-          WITHOUT LOANLY
-        </span>
-
-        <img src="image.png" class="rounded-xl filter hue-rotate-10 saturate-150 w-full h-full py-1">         
-        
-
-        <div class="absolute top-4 left-6 bg-white p-3 rounded-lg shadow text-xs text-red-500">
-          ❌ Missed Due Dates
-          <div class="text-gray-400 text-style-italic">
-            <p><span style="font-style: italic;">"Na-remind ko ba siya?"</span></p>
+        <div class="w-full max-w-[400px] min-h-[260px] bg-gray-50 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-center relative p-6 mt-4">
+          <span class="absolute -top-3.5 left-6 text-xs font-bold tracking-wide px-4 py-1 bg-gray-300 text-gray-600 rounded-full shadow-sm">
+            WITHOUT LOANLY
+          </span>
+          <img src="image.png" class="absolute inset-0 w-full h-full object-cover rounded-2xl opacity-10 mix-blend-overlay pointer-events-none filter hue-rotate-10 saturate-150" alt="background mesh layer contextual accent graphic texture container visual element backdrop frame border decoration canvas profile context markup template layout">
+          
+          <div class="w-full flex flex-col gap-4 z-10">
+            <div class="bg-white p-3.5 rounded-xl shadow-sm border border-red-100 self-start max-w-[85%]">
+              <p class="font-semibold text-xs text-red-500 mb-1">❌ Missed Due Dates</p>
+              <p class="text-gray-400 text-xs italic no-animate">"Na-remind ko ba siya?"</p>
+            </div>
+            <div class="bg-white p-3.5 rounded-xl shadow-sm border border-gray-100 self-end max-w-[85%]">
+              <p class="font-semibold text-xs text-gray-600 mb-1">📝 Manual Tracking</p>
+              <p class="text-gray-400 text-xs italic no-animate">"Ang hirap hanapin ng records."</p>
+            </div>
           </div>
         </div>
 
-        <div class="absolute bottom-4 right-6 bg-white p-3 rounded-lg shadow text-xs text-gray-500">
-          📝 Manual Tracking
-          <div class="text-gray-400">
-            <p>"Ang hirap hanapin ng records."</p>
+        <div class="w-full max-w-[400px] min-h-[260px] bg-green-50 rounded-2xl border border-green-100 shadow-sm flex flex-col items-center justify-center gap-4 relative p-6 mt-4">
+          <span class="absolute -top-3.5 left-6 text-xs font-bold tracking-wide px-4 py-1 bg-[#436c4e] text-white rounded-full shadow-sm">
+            WITH LOANLY
+          </span>
+          
+          <div class="w-full bg-white p-4 rounded-xl shadow-sm border border-green-100 flex items-start gap-3 transform hover:translate-x-1 transition duration-300">
+            <span class="text-green-500 font-bold mt-0.5">✔</span>
+            <div>
+              <p class="text-sm font-semibold text-gray-800">Payment Monitoring</p>
+              <p class="text-xs text-gray-400 no-animate">Track borrower payments in real time</p>
+            </div>
+          </div>
+
+          <div class="w-full bg-white p-4 rounded-xl shadow-sm border border-green-100 flex items-start gap-3 transform hover:translate-x-1 transition duration-300">
+            <span class="text-yellow-500 mt-0.5">🔔</span>
+            <div>
+              <p class="text-sm font-semibold text-gray-800">Automated Reminders</p>
+              <p class="text-xs text-gray-400 no-animate">Send alerts before due dates</p>
+            </div>
           </div>
         </div>
-
       </div>
 
-      <div class="w-full max-w-[400px] h-[260px] bg-green-50 rounded-2xl shadow-inner flex flex-col items-center justify-center gap-4 relative">
-
-        <span class="absolute -top-4 text-xs px-4 py-1 bg-[#436c4e] text-white rounded-full">
-          WITH LOANLY
-        </span>
-
-        <div class="w-[80%] bg-white p-4 rounded-xl shadow flex items-center gap-3">
-          <span class="text-green-500">✔</span>
-          <div>
-            <p class="text-sm font-medium text-gray-800">Payment Monitoring</p>
-            <p class="text-xs text-gray-400">Track borrower payments in real time</p>
-          </div>
-        </div>
-
-        <div class="w-[80%] bg-white p-4 rounded-xl shadow flex items-center gap-3">
-          <span class="text-yellow-500">🔔</span>
-          <div>
-            <p class="text-sm font-medium text-gray-800">Automated Reminders</p>
-            <p class="text-xs text-gray-400">Send alerts before due dates</p>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="text-center space-y-6 max-w-2xl">
-
-      <h2 class="text-4xl font-bold text-gray-600 leading-snug">
-        Messy notebooks and forgotten lists are holding you back
-      </h2>
-
-      <p class="text-gray-500">
-        <span style="color: gray;">We built a simpler, smarter way to track personal debt. 
-        More private, more organized, and actually stress-free.</span>
-      </p>
-      
-
-    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-    <div class="bg-gray-100 p-6 rounded-2xl shadow-sm hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-      <p class="text-3xl font-bold text-[#436c4e]">95%</p>
-      <p class="text-gray-500 mt-2 text-sm">
-        improved repayment consistency.
-      </p>
-    </div>
-
-    <div class="bg-gray-100 p-6 rounded-2xl shadow-sm hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-      <p class="text-3xl font-bold text-[#436c4e]">8 hrs</p>
-      <p class="text-gray-500 mt-2 text-sm">
-        saved weekly through automation.
-      </p>
-    </div>
-
-    <div class="bg-gray-100 p-6 rounded-2xl shadow-sm hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-      <p class="text-3xl font-bold text-[#436c4e]">100% Private</p>
-      <p class="text-gray-500 mt-2 text-sm">
-        Encrypted borrower and loan records.
-      </p>
-    </div>
-
-    <div class="bg-gray-100 p-6 rounded-2xl shadow-sm hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-      <p class="text-3xl font-bold text-[#436c4e]">24/7 Access</p>
-      <p class="text-gray-500 mt-2 text-sm">
-        Manage loans anytime, anywhere.
-      </p>
-    </div>
-
-    </div>
-
-  </div>
-
-  <div id="about" class="max-w-6xl mx-auto space-y-20">
-
-    <div class="grid md:grid-cols-2 gap-10 items-center">
-      
-      <div>
-        <h2 class="text-2xl mb-4 font-bold text-gray-700">All your loans in one dashboard</h2>
-        <p class="text-gray-500 mb-6">
-         Create, organize, and manage active loans with an intuitive dashboard built for lenders.
-        </p>
-
-        <ul class="space-y-3 text-sm text-gray-600">
-          <li>✔ Loan creation</li>
-          <li>✔ Borrower management</li>
-          <li>✔ Auto interest calculations</li>
-        </ul>
-      </div>
-
-      <div class="bg-gray-100 p-6 rounded-2xl shadow-md">
-        <img src="loan1.png" class="rounded-xl filter hue-rotate-250">
-      </div>
-
-    </div>
-
-    
-    <div class="grid md:grid-cols-2 gap-10 items-center">
-      
-      <div class="bg-gray-100 p-6 rounded-2xl shadow-md md:order-1 order-2">
-        <img src="loan3.jpg" class="rounded-xl">
-      </div>
-
-      <div class="md:order-2 order-1">
-        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Track borrower repayments easily</h2>
-        <p class="text-gray-500 mb-6">
-          Monitor balances, due dates, completed payments, and overdue accounts in real time.
-        </p>
-
-        <ul class="space-y-3 text-sm text-gray-500">
-          <li>✔ Due date tracking</li>
-          <li>✔ Payment logs</li>
-          <li>✔ Overdue monitoring</li>
-        </ul>
-      </div>
-
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-10 items-center">
-      
-      <div>
-        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Understand your lending performance</h2>
-        <p class="text-gray-500 mb-6">
-          Visualize capital flow, profit trends, and outstanding balances through analytics.
-        </p>
-        
-        <ul class="space-y-3 text-sm text-gray-600">
-          <li>✔ Revenue analytics</li>
-          <li>✔ Risk insights</li>
-          <li>✔ Capital overview</li>
-        </ul>
-      </div>
-
-      <div class="bg-gray-100 p-6 rounded-2xl shadow-md">
-        <img src="loan2.png" class="rounded-xl">
-      </div>
-
-    </div>
-
-  </div>
-
-  <div id="pricing" class="w-full py-24 bg-gray-100">
-
-  <div class="max-w-6xl mx-auto text-center space-y-4 mb-16">
-    <h2 class="text-4xl font-bold text-gray-700">
-      Simple, transparent pricing
-    </h2>
-    <p class="text-gray-500">
-      No hidden fees. Choose the plan that fits your tracking needs.
-    </p>
-  </div>
-
-  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-
-    <div class="bg-white p-8 rounded-2xl shadow-sm border-gray-200 hover:shadow-md ">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Free</h3>
-
-      <p class="text-3xl font-bold text-gray-700">₱0 <span class="text-sm text-gray-400">/forever</span></p>
-
-      <p class="text-gray-500 mt-4 text-sm">
-        Best for beginner lenders and small personal transactions.
-      </p>
-
-      <div class="border-t my-6"></div>
-
-      <ul class="space-y-3 text-sm text-gray-600">
-        <li>✅ Up to 50 active loans</li>
-        <li>✅ Borrower management</li>
-        <li>✅ Loan history logs</li>
-        <li>✅ Payment reminders</li>
-        <li>✅ Dashboard analytics</li>
-      </ul>
-
-      <button class="mt-8 w-full border py-2 rounded-lg hover:bg-gray-100 transition">
-        Get Started
-      </button>
-    </div>
-
-    <div class="bg-white p-8 rounded-2xl shadow-sm border-gray-900">
-      <h3 class="text-lg font-semibold text-gray-700 mb-4">Premium</h3>
-
-      <p class="text-3xl font-bold text-gray-700">Coming Soon</p>
-
-      <p class="text-gray-500 mt-4 text-sm">
-        Built for growing lending businesses.
-      </p>
-
-      <div class="border-t my-6"></div>
-
-      <ul class="space-y-3 text-sm text-gray-600">
-        <li>✅ Unlimited loans</li>
-        <li>✅ Unlimited borrowers</li>
-        <li>✅ SMS reminders</li>
-        <li>✅ PDF contracts</li>
-        <li>✅ Export reports</li>
-      </ul>
-
-      <button class="mt-8 w-full border py-2 rounded-lg bg-gray-100 cursor-not-allowed">
-        Coming Soon
-      </button>
-    </div>
-
-    <div class="bg-[#436c4e]   text-white p-8 rounded-2xl shadow-lg relative">
-
-      <span class="absolute -top-3 right-6 text-xs bg-white text-black font-bold px-3 py-1 rounded-full">
-        MOST POPULAR
-      </span>
-
-      <h3 class="text-lg font-semibold mb-4">Pro</h3>
-
-      <p class="text-3xl font-bold">Coming Soon</p>
-
-      <p class="text-blue-100 mt-4 text-sm">
-        Advanced tools for professional lenders and teams.
-      </p>
-
-      <div class="border-t border-green-600 my-6"></div>
-
-      <ul class="space-y-3 text-sm">
-        <li>✅ Team accounts</li>
-        <li>✅ Advanced analytics</li>
-        <li>✅ Multi-branch support</li>
-        <li>✅ Push notifications</li>
-        <li>✅ Priority support</li>
-      </ul>
-
-      <button class="mt-8 w-full bg-white text-green-700 py-2 rounded-lg font-medium">
-        Coming Soon
-      </button>
-    </div>
-
-    </div>
-
-  </div>
-</body>
-
-<section id="contact" class="w-full bg-white border-t border-gray-200 mt-20">
-
-  <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20">
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-
-      <div>
-        <h2 class="text-4xl md:text-5xl font-bold text-gray-700 leading-tight">
-          Frequently <br>
-          Asked <br>
-          Questions
+      <div class="text-center space-y-6 max-w-3xl mx-auto pt-4">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 leading-snug">
+          Messy notebooks and forgotten lists are holding you back
         </h2>
+        <p class="text-gray-500 text-base md:text-lg max-w-2xl mx-auto">
+          We built a simpler, smarter way to track personal debt. More private, more organized, and actually stress-free.
+        </p>
+      </div>
+      
+      <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-6">
+        <div class="bg-white md:bg-gray-100 p-6 rounded-2xl shadow-sm hover:bg-white hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer border border-gray-100 md:border-transparent card-tilt">
+          <p class="text-3xl font-bold text-[#436c4e] stat-counter">95%</p>
+          <p class="text-gray-500 mt-2 text-sm no-animate font-medium">improved repayment consistency.</p>
+        </div>
+
+        <div class="bg-white md:bg-gray-100 p-6 rounded-2xl shadow-sm hover:bg-white hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer border border-gray-100 md:border-transparent card-tilt">
+          <p class="text-3xl font-bold text-[#436c4e] stat-counter">8</p>
+          <p class="text-gray-500 mt-2 text-sm no-animate font-medium">hours saved weekly through automation.</p>
+        </div>
+
+        <div class="bg-white md:bg-gray-100 p-6 rounded-2xl shadow-sm hover:bg-white hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer border border-gray-100 md:border-transparent card-tilt">
+          <p class="text-3xl font-bold text-[#436c4e]">100% Private</p>
+          <p class="text-gray-500 mt-2 text-sm no-animate font-medium">Encrypted borrower and loan records.</p>
+        </div>
+
+        <div class="bg-white md:bg-gray-100 p-6 rounded-2xl shadow-sm hover:bg-white hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer border border-gray-100 md:border-transparent card-tilt">
+          <p class="text-3xl font-bold text-[#436c4e]">24/7 Access</p>
+          <p class="text-gray-500 mt-2 text-sm no-animate font-medium">Manage loans anytime, anywhere.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="max-w-6xl mx-auto px-4 sm:px-6 md:px-12 py-16 md:py-24 space-y-20 md:space-y-28">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div class="space-y-4 text-center md:text-left order-1">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">All your loans in one dashboard</h2>
+          <p class="text-gray-500 text-base">
+            Create, organize, and manage active loans with an intuitive dashboard built for lenders.
+          </p>
+          <ul class="inline-flex flex-col text-left gap-2.5 text-sm font-medium text-gray-600 pt-2">
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Loan creation</li>
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Borrower management</li>
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Auto interest calculations</li>
+          </ul>
+        </div>
+        <div class="bg-gray-100 p-4 sm:p-6 rounded-2xl shadow-md reveal-img order-2">
+          <img src="loan1.png" class="rounded-xl w-full h-auto object-cover filter hue-rotate-250" alt="interactive system configuration analytics metrics control monitoring framework presentation element view">
+        </div>
       </div>
 
-      <div class="space-y-6">
-
-        <details class="border-b pb-4 cursor-pointer group">
-          <summary class="flex justify-between items-center font-medium text-lg list-none text-gray-700">
-            What is Loanly?
-            <span class="group-open:rotate-180 transition">⌄</span>
-          </summary>
-          <p class="mt-3 text-gray-500 text-sm text-gray-500">
-            Loanly is a digital lending management platform for tracking borrowers, repayments, balances, and lending performance.
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div class="space-y-4 text-center md:text-left order-1 md:order-2">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Track borrower repayments easily</h2>
+          <p class="text-gray-500 text-base">
+            Monitor balances, due dates, completed payments, and overdue accounts in real time.
           </p>
-        </details>
-
-        <details class="border-b pb-4 cursor-pointer group">
-          <summary class="flex justify-between items-center font-medium text-lg list-none text-gray-700">
-            Who can use Loanly?
-            <span class="group-open:rotate-180 transition">⌄</span>
-          </summary>
-          <p class="mt-3 text-gray-500 text-sm text-gray-500">
-            Loanly is built for small business lenders, financing groups, cooperatives, and individual lenders.
-          </p>
-        </details>
-
-        <details class="border-b pb-4 cursor-pointer group">
-          <summary class="flex justify-between items-center font-medium text-lg list-none text-gray-700">
-            Is Loanly secure?
-            <span class="group-open:rotate-180 transition">⌄</span>
-          </summary>
-          <p class="mt-3 text-gray-500 text-sm text-gray-500">
-            Yes. All records are encrypted and accessible only through your secured account.
-          </p>
-        </details>
-
-        <details class="border-b pb-4 cursor-pointer group">
-          <summary class="flex justify-between items-center font-medium text-lg list-none text-gray-700">
-            Does Loanly process payments?
-            <span class="group-open:rotate-180 transition">⌄</span>
-          </summary>
-          <p class="mt-3 text-gray-500 text-sm text-gray-500">
-            Not yet. Loanly currently focuses on loan tracking, reminders, and analytics.
-          </p>
-        </details>
-
-        <details class="border-b pb-4 cursor-pointer group">
-          <summary class="flex justify-between items-center font-medium text-lg list-none text-gray-700">
-            How do I start?
-            <span class="group-open:rotate-180 transition">⌄</span>
-          </summary>
-          <p class="mt-3 text-gray-500 text-sm text-gray-500">
-            Create an account, add your borrowers, create loans, and start managing repayments instantly.
-          </p>
-        </details>
-
+          <ul class="inline-flex flex-col text-left gap-2.5 text-sm font-medium text-gray-600 pt-2">
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Due date tracking</li>
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Payment logs</li>
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Overdue monitoring</li>
+          </ul>
+        </div>
+        <div class="bg-gray-100 p-4 sm:p-6 rounded-2xl shadow-md reveal-img order-2 md:order-1">
+          <img src="loan3.jpg" class="rounded-xl w-full h-auto object-cover" alt="repayment scheduling ledger tracker configuration panel interface contextual window snapshot mockup screen graphic framework presentation element view">
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="border-t border-gray-200">
-    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div class="space-y-4 text-center md:text-left order-1">
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Understand your lending performance</h2>
+          <p class="text-gray-500 text-base">
+            Visualize capital flow, profit trends, and outstanding balances through analytics.
+          </p>
+          <ul class="inline-flex flex-col text-left gap-2.5 text-sm font-medium text-gray-600 pt-2">
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Revenue analytics</li>
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Risk insights</li>
+            <li class="flex items-center gap-2"><span class="text-green-600">✔</span> Capital overview</li>
+          </ul>
+        </div>
+        <div class="bg-gray-100 p-4 sm:p-6 rounded-2xl shadow-md reveal-img order-2">
+          <img src="loan2.png" class="rounded-xl w-full h-auto object-cover" alt="data reporting flowcharts metrics charts visual presentation panel framework graphical workspace container visual item dynamic element template preview">
+        </div>
+      </div>
+    </section>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+    <section id="pricing" class="w-full py-16 md:py-24 bg-gray-100 px-4 sm:px-6 md:px-12 lg:px-20">
+      <div class="max-w-3xl mx-auto text-center space-y-4 mb-12 md:mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Simple, transparent pricing</h2>
+        <p class="text-gray-500 text-base md:text-lg">
+          No hidden fees. Choose the plan that fits your tracking needs.
+        </p>
+      </div>
 
-        <div>
-          <div class="flex items-center gap-3 mb-4">
-            <img src="loanly.jpg" class="w-10 h-10 rounded-full">
-            <h3 class="text-2xl font-bold text-gray-800">
-              Loanly
-            </h3>
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+
+        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full">
+          <div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Free</h3>
+            <p class="text-3xl font-extrabold text-gray-900">₱0 <span class="text-sm font-normal text-gray-400">/forever</span></p>
+            <p class="text-gray-500 mt-4 text-sm no-animate">
+              Best for beginner lenders and small personal transactions.
+            </p>
+            <div class="border-t border-gray-100 my-6"></div>
+            <ul class="space-y-3.5 text-sm font-medium text-gray-600">
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> Up to 50 active loans</li>
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> Borrower management</li>
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> Loan history logs</li>
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> Payment reminders</li>
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> Dashboard analytics</li>
+            </ul>
+          </div>
+          <button class="mt-8 w-full border-2 border-gray-200 py-2.5 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition">
+            Get Started
+          </button>
+        </div>
+
+        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full relative">
+          <div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Premium</h3>
+            <p class="text-3xl font-extrabold text-gray-500">Coming Soon</p>
+            <p class="text-gray-500 mt-4 text-sm no-animate">
+              Built for growing lending businesses.
+            </p>
+            <div class="border-t border-gray-100 my-6"></div>
+            <ul class="space-y-3.5 text-sm font-medium text-gray-600">
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> Unlimited loans</li>
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> Unlimited borrowers</li>
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> SMS reminders</li>
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> PDF contracts</li>
+              <li class="flex items-center gap-2.5"><span class="text-green-600">✅</span> Export reports</li>
+            </ul>
+          </div>
+          <button class="mt-8 w-full border border-transparent py-2.5 rounded-lg font-semibold bg-gray-100 text-gray-400 cursor-not-allowed" disabled>
+            Coming Soon
+          </button>
+        </div>
+
+        <div class="bg-[#436c4e] text-white p-6 sm:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between h-full relative border border-[#3b6045]">
+          <span class="absolute -top-3 right-6 text-[10px] font-black tracking-widest bg-white text-gray-900 px-3 py-1 rounded-full shadow-sm">
+            MOST POPULAR
+          </span>
+          <div>
+            <h3 class="text-lg font-bold mb-2">Pro</h3>
+            <p class="text-3xl font-extrabold">Coming Soon</p>
+            <p class="text-green-100 mt-4 text-sm no-animate">
+              Advanced tools for professional lenders and teams.
+            </p>
+            <div class="border-t border-green-600/40 my-6"></div>
+            <ul class="space-y-3.5 text-sm font-medium text-green-50 text-opacity-95">
+              <li class="flex items-center gap-2.5"><span>✅</span> Team accounts</li>
+              <li class="flex items-center gap-2.5"><span>✅</span> Advanced analytics</li>
+              <li class="flex items-center gap-2.5"><span>✅</span> Multi-branch support</li>
+              <li class="flex items-center gap-2.5"><span>✅</span> Push notifications</li>
+              <li class="flex items-center gap-2.5"><span>✅</span> Priority support</li>
+            </ul>
+          </div>
+          <button class="mt-8 w-full bg-white text-[#436c4e] hover:bg-green-50 py-2.5 rounded-lg font-bold shadow-sm transition cursor-not-allowed" disabled>
+            Coming Soon
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="w-full bg-white border-t border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-16 md:py-24">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          <div class="lg:col-span-4 text-center lg:text-left">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 leading-tight">
+              Frequently <br class="hidden lg:inline">
+              Asked <br class="hidden lg:inline">
+              Questions
+            </h2>
           </div>
 
-          <p class="text-gray-500 text-sm max-w-xs">
-            A smarter lending management platform built for modern Filipino lenders.
-            Track loans, borrowers, and repayments with ease.
-          </p>
-        </div>
+          <div class="lg:col-span-8 space-y-4 max-w-3xl mx-auto lg:mx-0 w-full">
+            <details class="border-b border-gray-100 pb-4 cursor-pointer group focus:outline-none">
+              <summary class="flex justify-between items-center font-semibold text-base sm:text-lg list-none text-gray-800 marker:hidden">
+                What is Loanly?
+                <span class="group-open:rotate-180 transition text-gray-400 font-normal ml-2">⌄</span>
+              </summary>
+              <p class="mt-3 text-gray-500 text-sm leading-relaxed no-animate">
+                Loanly is a digital lending management platform for tracking borrowers, repayments, balances, and lending performance.
+              </p>
+            </details>
 
-        <div>
-          <h4 class="font-semibold mb-4 text-sm tracking-wide text-gray-700">
-            QUICK LINKS
-          </h4>
-          <ul class="space-y-3 text-gray-500 text-sm">
-            <li><a href="#home" class="hover:text-[#436c4e]">Home</a></li>
-            <li><a href="#features" class="hover:text-[#436c4e]">Features</a></li>
-            <li><a href="#pricing" class="hover:text-[#436c4e]">Pricing</a></li>
-          </ul>
-        </div>
-        
-        <div>
-          <h4 class="font-semibold mb-4 text-sm tracking-wide text-gray-700">
-            COMPANY
-          </h4>
-          <ul class="space-y-3 text-gray-500 text-sm">
-            <li><a href="#" class="hover:text-[#436c4e]">About Us</a></li>
-            <li><a href="#" class="hover:text-[#436c4e]">Contact</a></li>
-          </ul>
-        </div>
+            <details class="border-b border-gray-100 pb-4 cursor-pointer group focus:outline-none">
+              <summary class="flex justify-between items-center font-semibold text-base sm:text-lg list-none text-gray-800 marker:hidden">
+                Who can use Loanly?
+                <span class="group-open:rotate-180 transition text-gray-400 font-normal ml-2">⌄</span>
+              </summary>
+              <p class="mt-3 text-gray-500 text-sm leading-relaxed no-animate">
+                Loanly is built for small business lenders, financing groups, cooperatives, and individual lenders.
+              </p>
+            </details>
 
+            <details class="border-b border-gray-100 pb-4 cursor-pointer group focus:outline-none">
+              <summary class="flex justify-between items-center font-semibold text-base sm:text-lg list-none text-gray-800 marker:hidden">
+                Is Loanly secure?
+                <span class="group-open:rotate-180 transition text-gray-400 font-normal ml-2">⌄</span>
+              </summary>
+              <p class="mt-3 text-gray-500 text-sm leading-relaxed no-animate">
+                Yes. All records are encrypted and accessible only through your secured account.
+              </p>
+            </details>
+
+            <details class="border-b border-gray-100 pb-4 cursor-pointer group focus:outline-none">
+              <summary class="flex justify-between items-center font-semibold text-base sm:text-lg list-none text-gray-800 marker:hidden">
+                Does Loanly process payments?
+                <span class="group-open:rotate-180 transition text-gray-400 font-normal ml-2">⌄</span>
+              </summary>
+              <p class="mt-3 text-gray-500 text-sm leading-relaxed no-animate">
+                Not yet. Loanly currently focuses on loan tracking, reminders, and analytics.
+              </p>
+            </details>
+
+            <details class="border-b border-gray-100 pb-4 cursor-pointer group focus:outline-none">
+              <summary class="flex justify-between items-center font-semibold text-base sm:text-lg list-none text-gray-800 marker:hidden">
+                How do I start?
+                <span class="group-open:rotate-180 transition text-gray-400 font-normal ml-2">⌄</span>
+              </summary>
+              <p class="mt-3 text-gray-500 text-sm leading-relaxed no-animate">
+                Create an account, add your borrowers, create loans, and start managing repayments instantly.
+              </p>
+            </details>
+          </div>
+        </div>
       </div>
 
-      <div class="border-t border-gray-200 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="border-t border-gray-200 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-12 md:py-16">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 items-start">
+            <div class="sm:col-span-2 space-y-4 text-center sm:text-left">
+              <div class="flex items-center justify-center sm:justify-start gap-3">
+                <img src="loanly.jpg" class="w-9 h-9 rounded-full object-cover shadow-sm" alt="brand miniature round profile dynamic identifier image display context layer layout">
+                <h3 class="text-xl font-bold text-gray-800 tracking-tight">Loanly</h3>
+              </div>
+              <p class="text-gray-500 text-sm max-w-xs mx-auto sm:mx-0 leading-relaxed no-animate">
+                A smarter lending management platform built for modern Filipino lenders. Track loans, borrowers, and repayments with ease.
+              </p>
+            </div>
 
-        <p class="text-xs text-gray-400">
-          © 2026 Loanly. All rights reserved.
-        </p>
+            <div class="text-center sm:text-left">
+              <h4 class="font-bold text-xs tracking-widest text-gray-700 uppercase mb-4">Quick Links</h4>
+              <ul class="space-y-2.5 text-sm font-medium text-gray-500">
+                <li><a href="#home" class="hover:text-[#436c4e] transition-colors">Home</a></li>
+                <li><a href="#features" class="hover:text-[#436c4e] transition-colors">Features</a></li>
+                <li><a href="#pricing" class="hover:text-[#436c4e] transition-colors">Pricing</a></li>
+              </ul>
+            </div>
+            
+            <div class="text-center sm:text-left">
+              <h4 class="font-bold text-xs tracking-widest text-gray-700 uppercase mb-4">Company</h4>
+              <ul class="space-y-2.5 text-sm font-medium text-gray-500">
+                <li><a href="#" class="hover:text-[#436c4e] transition-colors">About Us</a></li>
+                <li><a href="#" class="hover:text-[#436c4e] transition-colors">Contact</a></li>
+              </ul>
+            </div>
+          </div>
 
-        <div class="flex gap-3">
-          <div class="w-4 h-4 bg-gray-200 rounded-full"></div>
-          <div class="w-4 h-4 bg-gray-200 rounded-full"></div>
-          <div class="w-4 h-4 bg-gray-200 rounded-full"></div>
+          <div class="border-t border-gray-200 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-gray-400 text-center sm:text-left no-animate font-medium">
+              &copy; 2026 Loanly. All rights reserved.
+            </p>
+            <div class="flex gap-4">
+              <div class="w-5 h-5 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer transition"></div>
+              <div class="w-5 h-5 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer transition"></div>
+              <div class="w-5 h-5 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer transition"></div>
+            </div>
+          </div>
         </div>
-
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
-</section>
-
-
-
-  </div>
-  </html>
+</body>
+</html>
